@@ -1,0 +1,187 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    box-sizing: content-box;
+    user-select: none;
+}
+
+body {
+    color-scheme: dark;
+    overflow: hidden;
+    background-color: rgb(30, 30, 30);
+    color: white;
+}
+
+.app {
+    height: 100dvh;
+    background-color: black;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.app .titlebar {
+    position: relative;
+    z-index: 2;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgb(10, 10, 10);
+    -webkit-app-region: drag;
+    border-bottom: 1px solid rgb(80, 80, 80);
+}
+
+.app .titlebar .title {
+    font-size: 16px;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.app .titlebar .title .text {
+    background-color: currentColor;
+    width: 100px;
+    height: 20px;
+    mask: url("../assets/full.svg") no-repeat center / contain;
+}
+
+.app .titlebar .controls {
+    display: flex;
+    gap: 1px;
+}
+
+.app .titlebar .controls button {
+    width: 40px;
+    height: 35px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 100;
+    color: white;
+    -webkit-app-region: no-drag;
+    transition: all .25s cubic-bezier(0, .8, .2, 1);
+}
+
+.app .titlebar .controls button:hover {
+    background-color: rgba(255, 255, 255, .1);
+}
+
+.app .titlebar .controls button:active {
+    background-color: rgba(255, 255, 255, .2);
+    transition: none;
+}
+
+.app .titlebar .controls button[red]:hover,
+.app .titlebar .controls button[red]:active {
+    background-color: rgb(255, 0, 0);
+}
+
+.app .titlebar .controls button[disabled] {
+    background-color: transparent;
+    color: rgb(50, 50, 50);
+}
+
+.app .content {
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.app .content .tools {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 15px;
+    background-color: rgb(20, 20, 20);
+    border-bottom: 1px solid rgb(80, 80, 80);
+}
+
+.app .content .tools .tool {
+    width: max-content;
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: rgb(150, 150, 150);
+    margin-bottom: 2px;
+    cursor: pointer;
+    transition: all .25s cubic-bezier(0, .8, .2, 1);
+}
+
+.app .content .tools .tool:active,
+.app .content .tools .tool:hover {
+    color: rgb(255, 255, 255);
+}
+
+.app .content .tools .tool:active {
+    background-color: rgb(50, 50, 50);
+    translate: 0px 1px;
+}
+
+.app .content .tools .tool::before {
+    content: "";
+    position: absolute;
+    top: calc(100% + 1px);
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0;
+    transition: all .25s cubic-bezier(0, .8, .2, 1);
+}
+
+.app .content .tools .tool:active::before,
+.app .content .tools .tool:hover::before {
+    opacity: 1;
+}
+
+.app .content .shortcuts {
+    flex: 1 1;
+    max-height: calc(100% - 77px);
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.app .content .shortcuts .shortcut {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: rgb(20, 20, 20);
+}
+
+.app .content .shortcuts .shortcut .shortcut-name {
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+}
+
+.app .content .shortcuts .shortcut .shortcut-hotkey {
+    font-size: 14px;
+    color: rgb(150, 150, 150);
+}
+
+.app .content .shortcuts .shortcut .shortcut-action {
+    font-size: 14px;
+    color: rgb(150, 150, 150);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: text;
+}
+
+.app .content .shortcuts .shortcut .shortcut-separator::before {
+    content: "/";
+    width: 1px;
+    height: 100%;
+    color: rgb(80, 80, 80);
+}

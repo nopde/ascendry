@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "Icons";
+    font-display: swap;
+    src: url("icons.ttf") format("truetype");
+}
+
+.icons {
+    font-family: "Icons";
+}

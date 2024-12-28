@@ -1,0 +1,34 @@
+{
+    "name": "ascendry",
+    "version": "0.0.1",
+    "main": "main.js",
+    "author": "nopde",
+    "repository": "https://github.com/nopde/ascendry",
+    "license": "MIT",
+    "description": "",
+    "build": {
+        "appId": "ascendry",
+        "productName": "Ascendry",
+        "icon": "icon_white.ico",
+        "win": {
+            "artifactName": "AscendrySetup.exe",
+            "target": "nsis-web"
+        },
+        "nsisWeb": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
+        },
+        "directories": {
+            "output": "dist"
+        }
+    },
+    "scripts": {
+        "start": "electron .",
+        "build": "electron-builder build",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "electron": "^32.1.2",
+        "electron-builder": "^25.1.8"
+    }
+}

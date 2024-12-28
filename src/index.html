@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ascendry</title>
+
+    <link rel="stylesheet" href="fonts/icons/icons.css">
+    <link rel="stylesheet" href="fonts/jetbrainsmono/jetbrainsmono.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app">
+        <div class="titlebar">
+            <div class="title">
+                <div class="text"></div>
+            </div>
+            <div class="controls">
+                <button id="minimize"><span class="icons">&#xE921</span></button>
+                <button id="maximize"><span class="icons">&#xE922</span></button>
+                <button id="quit" red><span class="icons">&#xE8BB</span></button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="tools">
+                <div class="tool" id="add-shortcut">Add shortcut</div>
+                <div class="tool" id="remove-shortcut">Remove shortcut</div>
+            </div>
+            <div class="shortcuts" id="shortcuts"></div>
+        </div>
+    </div>
+</body>
+
+<script src="index.js" type="module"></script>
+
+</html>
