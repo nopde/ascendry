@@ -72,16 +72,17 @@ class Shortcut {
 class ShortcutManager {
     constructor() {
         this.shortcuts = [];
+        this.filePath = path.join(app.getPath("userData"), "shortcuts.json");
     }
 
     read() {
-        if (!fs.existsSync(path.join(app.getAppPath(), "shortcuts.json"))) {
-            fs.writeFileSync(path.join(app.getAppPath(), "shortcuts.json"), JSON.stringify([]));
+        if (!fs.existsSync(this.filePath)) {
+            fs.writeFileSync(this.filePath, JSON.stringify([]));
             return;
         }
 
         try {
-            const shortcuts = JSON.parse(fs.readFileSync(path.join(app.getAppPath(), "shortcuts.json")));
+            const shortcuts = JSON.parse(fs.readFileSync(this.filePath));
             this.shortcuts = shortcuts.map((s) => new Shortcut(s.name, s.key, s.action));
             this.shortcuts.forEach((s) => s.setup());
         }
@@ -92,7 +93,7 @@ class ShortcutManager {
 
     save() {
         const shortcuts = this.shortcuts.map((s) => s.toJSON());
-        fs.writeFileSync(path.join(app.getAppPath(), "shortcuts.json"), JSON.stringify(shortcuts, null, 4));
+        fs.writeFileSync(this.filePath, JSON.stringify(shortcuts, null, 4));
     }
 
     add(shortcut) {
@@ -128,7 +129,7 @@ class ShortcutManager {
     }
 }
 
-const image = nativeImage.createFromPath(path.join(app.getAppPath(), "build", "icon.ico"));
+const image = nativeImage.createFromPath(path.join(app.getAppPath(), "assets", "icon.ico"));
 
 if (!gotTheLock) {
     app.quit();
