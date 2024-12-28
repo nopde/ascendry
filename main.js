@@ -17,7 +17,7 @@ function createWindow() {
         resizable: true,
         maximizable: true,
         fullscreenable: false,
-        icon: path.join("assets", "icon_white.ico"),
+        icon: path.join(app.getAppPath(), "assets", "icon_white.ico"),
         webPreferences: {
             preload: path.join(app.getAppPath(), "preload.js"),
         },
@@ -49,6 +49,7 @@ class Shortcut {
         if (!this.check()) return false;
 
         globalShortcut.register(this.key, () => {
+            console.log("Shortcut triggered: " + this.name);
             exec(this.action);
         });
 
@@ -150,7 +151,7 @@ else {
             { type: "separator" },
             { label: "Show", click: function () { mainWindow.show(); } },
             { type: "separator" },
-            { label: "Quit", click: function () { mainWindow.destroy(); app.quit(); } }
+            { label: "Quit", click: function () { mainWindow.destroy(); app.quit(); globalShortcut.unregisterAll(); } }
         ]);
         tray.setContextMenu(contextMenu);
         tray.setToolTip(`Ascendry (v${app.getVersion()})`);
@@ -199,12 +200,6 @@ else {
         });
 
         ipcMain.handle("quit", (event) => {
-            globalShortcut.unregisterAll();
-            app.quit();
-        });
-
-        mainWindow.on("close", function (event) {
-            event.preventDefault();
             mainWindow.hide();
         });
 
