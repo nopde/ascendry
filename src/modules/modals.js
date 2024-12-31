@@ -48,9 +48,8 @@ function createModal(name, content) {
             }
 
             .modal {
-                background-color: rgb(255, 255, 255, .15);
-                border: 1px solid rgba(255, 255, 255, .1);
-                border-radius: 10px;
+                background-color: rgb(20, 20, 20);
+                border-radius: 3px;
                 padding: 20px;
                 padding-top: 0;
                 min-width: 300px;
@@ -65,7 +64,7 @@ function createModal(name, content) {
                 display: flex;
                 align-items: center;
                 justify-content: right;
-                gap: 10px;
+                gap: 20px;
                 padding-top: 20px;
                 padding-inline: 10px;
             }
@@ -150,14 +149,41 @@ function createModal(name, content) {
                 background-color: rgb(255, 255, 255, .35);
             }
 
+            button.modal-button.square {
+                border-radius: 5px;
+            }
+
+            .modal-input-container {
+                display: flex;
+                position: relative;
+                width: 100%;
+                height: max-content;
+            }
+
+            .modal-input-container::before {
+                content: attr(label);
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                right: 2px;
+                height: max-content;
+                font-size: 10px;
+                color: rgba(255, 255, 255, .75);
+                background-color: rgb(255, 255, 255, .15);
+                border: 1px solid rgba(255, 255, 255, .1);
+                border-radius: 3px;
+                text-align: center;
+                pointer-events: none;
+            }
+
             input.modal-input {
                 flex: 1 1;
-                background-color: transparent;
-                box-shadow: 0 0 0 1px white;
+                background-color: rgba(255, 255, 255, .15);
+                box-shadow: 0 0 0 1px rgba(255, 255, 255, .25);
                 border: none;
                 outline: none;
-                padding: 10px 20px;
-                border-radius: 999px;
+                padding: 10px;
+                border-radius: 5px;
                 color: white;
                 transition: all .15s cubic-bezier(0.25, 1, 0.5, 1);
             }
@@ -173,6 +199,10 @@ function createModal(name, content) {
 
             input.modal-input::placeholder {
                 color: rgba(255, 255, 255, .75);
+            }
+
+            .modal-input-container[label] .modal-input {
+                padding-top: 25px;
             }
         </style>
     `
@@ -231,7 +261,7 @@ function openAddShortcutModal() {
                 color: rgba(255, 255, 255, .75);
                 background-color: rgb(255, 255, 255, .15);
                 border: 1px solid rgba(255, 255, 255, .1);
-                border-radius: 10px;
+                border-radius: 5px;
                 padding: 5px 10px;
             }
 
@@ -246,18 +276,22 @@ function openAddShortcutModal() {
                 color: rgba(255, 255, 255, .75);
                 background-color: rgb(255, 255, 255, .15);
                 border: 1px solid rgba(255, 255, 255, .1);
-                border-radius: 999px;
+                border-radius: 3px;
                 text-align: center;
             }
         </style>
 
         <form onsubmit="return false">
-            <input class="modal-input" id="shortcut-name" type="text" placeholder="Shortcut name" spellcheck="false" autocomplete="off" required>
+            <div class="modal-input-container" label="Name">
+                <input class="modal-input" id="shortcut-name" type="text" placeholder="notepad-shortcut" spellcheck="false" autocomplete="off" required>
+            </div>
             <div class="hotkey-input">
                 <p class="hotkey-display" id="hotkey-display">No hotkey</p>
-                <button class="modal-button" id="hotkey-bind" type="button">Change</button>
+                <button class="modal-button square" id="hotkey-bind" type="button">Change</button>
             </div>
-            <input class="modal-input" id="shortcut-action" type="text" placeholder="Shortcut action" spellcheck="false" autocomplete="off" required>
+            <div class="modal-input-container" label="Action">
+                <input class="modal-input" id="shortcut-action" type="text" placeholder="start notepad" spellcheck="false" autocomplete="off" required>
+            </div>
             <button class="modal-button" type="submit">Confirm</button>
         </form>
     `;
@@ -327,7 +361,6 @@ function openEditShortcutModal(shortcut) {
 
             .hotkey-input {
                 display: flex;
-                align-items: center;
                 gap: 10px;
             }
 
@@ -346,7 +379,7 @@ function openEditShortcutModal(shortcut) {
                 color: rgba(255, 255, 255, .75);
                 background-color: rgb(255, 255, 255, .15);
                 border: 1px solid rgba(255, 255, 255, .1);
-                border-radius: 10px;
+                border-radius: 5px;
                 padding: 5px 10px;
             }
 
@@ -361,18 +394,22 @@ function openEditShortcutModal(shortcut) {
                 color: rgba(255, 255, 255, .75);
                 background-color: rgb(255, 255, 255, .15);
                 border: 1px solid rgba(255, 255, 255, .1);
-                border-radius: 999px;
+                border-radius: 3px;
                 text-align: center;
             }
         </style>
 
         <form onsubmit="return false">
-            <input class="modal-input" id="shortcut-name" type="text" placeholder="Shortcut name" spellcheck="false" autocomplete="off" required>
+            <div class="modal-input-container" label="Name">
+                <input class="modal-input" id="shortcut-name" type="text" placeholder=${shortcut.name} spellcheck="false" autocomplete="off" required>
+            </div>
             <div class="hotkey-input">
                 <p class="hotkey-display" id="hotkey-display"></p>
-                <button class="modal-button" id="hotkey-bind" type="button">Change</button>
+                <button class="modal-button square" id="hotkey-bind" type="button">Change</button>
             </div>
-            <input class="modal-input" id="shortcut-action" type="text" placeholder="Shortcut action" spellcheck="false" autocomplete="off" required>
+            <div class="modal-input-container" label="Action">
+                <input class="modal-input" id="shortcut-action" type="text" placeholder=${shortcut.action} spellcheck="false" autocomplete="off" required>
+            </div>
             <button class="modal-button" type="submit">Confirm</button>
         </form>
     `;
@@ -480,6 +517,8 @@ function openSetShortcutHotkeyModal() {
 
             .hotkey-input-container .modal-button {
                 position: relative;
+                min-width: 53px;
+                min-height: 53px;
                 width: 45px;
                 height: 45px;
                 padding: 0;
@@ -532,7 +571,9 @@ function openSetShortcutHotkeyModal() {
 
         <div class="invalid-hotkey">Invalid hotkey, please try again.</div>
         <div class="hotkey-input-container">
-            <input class="modal-input" id="shortcut-hotkey" type="text" placeholder="Shortcut hotkey" spellcheck="false" autocomplete="off" required>
+            <div class="modal-input-container" label="Hotkey">
+                <input class="modal-input" id="shortcut-hotkey" type="text" placeholder="ctrl+shift+a" spellcheck="false" autocomplete="off" required>
+            </div>
             <button class="modal-button" id="record-button"></button>
         </div>
         <button class="modal-button" type="submit" id="confirm">Confirm</button>
