@@ -16,7 +16,6 @@ body {
 .app {
     height: 100dvh;
     background-color: black;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
 }
@@ -88,13 +87,13 @@ body {
     color: rgb(50, 50, 50);
 }
 
-.app .content {
+.app {
     flex: 1 1;
     display: flex;
     flex-direction: column;
 }
 
-.app .content .tools {
+.app .tools {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -103,7 +102,7 @@ body {
     border-bottom: 1px solid rgb(80, 80, 80);
 }
 
-.app .content .tools .tool {
+.app .tools .tool {
     width: max-content;
     position: relative;
     display: flex;
@@ -115,17 +114,17 @@ body {
     transition: all .25s cubic-bezier(0, .8, .2, 1);
 }
 
-.app .content .tools .tool:active,
-.app .content .tools .tool:hover {
+.app .tools .tool:active,
+.app .tools .tool:hover {
     color: rgb(255, 255, 255);
 }
 
-.app .content .tools .tool:active {
+.app .tools .tool:active {
     background-color: rgb(50, 50, 50);
     translate: 0px 1px;
 }
 
-.app .content .tools .tool::before {
+.app .tools .tool::before {
     content: "";
     position: absolute;
     top: calc(100% + 1px);
@@ -136,22 +135,21 @@ body {
     transition: all .25s cubic-bezier(0, .8, .2, 1);
 }
 
-.app .content .tools .tool:active::before,
-.app .content .tools .tool:hover::before {
+.app .tools .tool:active::before,
+.app .tools .tool:hover::before {
     opacity: 1;
 }
 
-.app .content .shortcuts {
+.app .shortcuts {
     flex: 1 1;
-    max-height: calc(100% - 77px);
-    overflow-y: auto;
     padding: 10px;
+    overflow: auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.app .content .shortcuts .shortcut {
+.app .shortcuts .shortcut {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -160,17 +158,19 @@ body {
     background-color: rgb(20, 20, 20);
 }
 
-.app .content .shortcuts .shortcut .shortcut-name {
+.app .shortcuts .shortcut .shortcut-name {
     font-size: 14px;
     color: rgb(255, 255, 255);
+    white-space: nowrap;
 }
 
-.app .content .shortcuts .shortcut .shortcut-hotkey {
+.app .shortcuts .shortcut .shortcut-hotkey {
     font-size: 14px;
     color: rgb(150, 150, 150);
+    white-space: nowrap;
 }
 
-.app .content .shortcuts .shortcut .shortcut-action {
+.app .shortcuts .shortcut .shortcut-action {
     font-size: 14px;
     color: rgb(150, 150, 150);
     white-space: nowrap;
@@ -179,9 +179,55 @@ body {
     user-select: text;
 }
 
-.app .content .shortcuts .shortcut .shortcut-separator::before {
+.app .shortcuts .shortcut .shortcut-separator::before {
     content: "/";
     width: 1px;
     height: 100%;
     color: rgb(80, 80, 80);
+}
+
+.app .shortcuts .shortcut .shortcut-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.app .shortcuts .shortcut .shortcut-controls button {
+    position: relative;
+    width: max-content;
+    height: max-content;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    font-size: 14px;
+    color: rgb(150, 150, 150);
+    cursor: pointer;
+    transition: all .25s cubic-bezier(0, .8, .2, 1);
+}
+
+.app .shortcuts .shortcut .shortcut-controls button:hover {
+    color: rgb(255, 255, 255);
+}
+
+.app .shortcuts .shortcut .shortcut-controls button:active {
+    color: rgb(255, 255, 255);
+    background-color: rgb(50, 50, 50);
+}
+
+.app .shortcuts .shortcut .shortcut-controls button::before {
+    content: "";
+    position: absolute;
+    top: calc(100% + 1px);
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0;
+    transition: all .25s cubic-bezier(0, .8, .2, 1);
+}
+
+.app .shortcuts .shortcut .shortcut-controls button:active::before,
+.app .shortcuts .shortcut .shortcut-controls button:hover::before {
+    opacity: 1;
 }

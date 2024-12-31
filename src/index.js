@@ -25,18 +25,24 @@ quit.addEventListener("click", async () => {
 
 const shortcutsContainer = document.getElementById("shortcuts");
 const addShortcut = document.getElementById("add-shortcut");
-const removeShortcut = document.getElementById("remove-shortcut");
 
 addShortcut.addEventListener("click", async () => {
     addShortcutModal();
 });
 
-removeShortcut.addEventListener("click", async () => {
-    removeShortcutModal();
-});
-
 function renderShortcuts(shortcuts) {
     shortcutsContainer.innerHTML = "";
+
+    if (shortcuts.length === 0) {
+        shortcutsContainer.innerHTML = `
+            <div class="shortcut">
+                <div class="shortcut-name">No shortcuts</div>
+                <div class="shortcut-separator"></div>
+                <div class="shortcut-hotkey">Add a shortcut by pressing the "Add shortcut" button in the top bar</div>
+            </div>
+        `;
+        return;
+    }
 
     shortcutsContainer.appendChild(document.createElement("h2")).innerText = "Shortcuts";
 
@@ -49,7 +55,23 @@ function renderShortcuts(shortcuts) {
             <div class="shortcut-hotkey">${shortcut.key}</div>
             <div class="shortcut-separator"></div>
             <div class="shortcut-action">${shortcut.action}</div>
+            <div class="shortcut-controls">
+                <div class="shortcut-separator"></div>
+                <button id="shortcut-remove">Remove</button>
+                <div class="shortcut-separator"></div>
+                <button id="shortcut-edit">Edit</button>
+            </div>
         `;
+
+        const editButton = shortcutElement.querySelector("#shortcut-edit");
+        editButton.addEventListener("click", () => {
+            editShortcutModal(shortcut);
+        });
+
+        const removeButton = shortcutElement.querySelector("#shortcut-remove");
+        removeButton.addEventListener("click", () => {
+            removeShortcutModal(shortcut);
+        });
 
         shortcutsContainer.appendChild(shortcutElement);
     }
@@ -172,7 +194,7 @@ function createModal(name, content) {
         <div class="modal">
             <div class="modal-title">
                 ${name ? `<p>${name}</p>` : ""}
-                <button id="close" ripple>Close</button>
+                <button id="close">Close</button>
             </div>
             <div class="modal-content"></div>
         </div>
@@ -278,7 +300,7 @@ function addShortcutModal() {
             <input class="modal-input" id="shortcut-name" type="text" placeholder="Shortcut name" spellcheck="false" autocomplete="off" required>
             <input class="modal-input" id="shortcut-hotkey" type="text" placeholder="Shortcut hotkey" spellcheck="false" autocomplete="off" required>
             <input class="modal-input" id="shortcut-action" type="text" placeholder="Shortcut action" spellcheck="false" autocomplete="off" required>
-            <button class="modal-button" type="submit" ripple>Confirm</button>
+            <button class="modal-button" type="submit">Confirm</button>
         </form>
     `;
 
@@ -304,7 +326,27 @@ function addShortcutModal() {
     });
 }
 
-function removeShortcutModal() {
+function removeShortcutModal(shortcut) {
+    const modalHTML = `
+        <button class="modal-button" id="confirm">Confirm</button>
+    `;
+
+    let modalContainer = createModal("Remove shortcut", modalHTML);
+
+    const confirmButton = modalContainer.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#confirm");
+    confirmButton.focus();
+
+    confirmButton.addEventListener("click", event => {
+        const result = window.electronAPI.removeShortcut(shortcut.name);
+
+        modalContainer.dispatchEvent(new CustomEvent("close-modal"));
+        modalContainer.addEventListener("ready-to-close", () => {
+            getShortcuts();
+        });
+    });
+}
+
+function editShortcutModal(shortcut) {
     const modalHTML = `
         <style>
             form {
@@ -317,20 +359,30 @@ function removeShortcutModal() {
 
         <form onsubmit="return false">
             <input class="modal-input" id="shortcut-name" type="text" placeholder="Shortcut name" spellcheck="false" autocomplete="off" required>
-            <button class="modal-button" type="submit" ripple>Confirm</button>
+            <input class="modal-input" id="shortcut-hotkey" type="text" placeholder="Shortcut hotkey" spellcheck="false" autocomplete="off" required>
+            <input class="modal-input" id="shortcut-action" type="text" placeholder="Shortcut action" spellcheck="false" autocomplete="off" required>
+            <button class="modal-button" type="submit">Confirm</button>
         </form>
     `;
 
-    let modalContainer = createModal("Remove shortcut", modalHTML);
+    let modalContainer = createModal("Edit shortcut", modalHTML);
 
     const form = modalContainer.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("form");
     const nameInput = modalContainer.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#shortcut-name");
+    const hotkeyInput = modalContainer.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#shortcut-hotkey");
+    const actionInput = modalContainer.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#shortcut-action");
+
+    nameInput.value = shortcut.name;
+    hotkeyInput.value = shortcut.key;
+    actionInput.value = shortcut.action;
 
     nameInput.focus();
 
     form.addEventListener("submit", event => {
-        const shortcutName = nameInput.value;
-        const result = window.electronAPI.removeShortcut(shortcutName);
+        const name = nameInput.value;
+        const hotkey = hotkeyInput.value;
+        const action = actionInput.value;
+        const result = window.electronAPI.editShortcut(shortcut.name, { name, key: hotkey, action });
 
         modalContainer.dispatchEvent(new CustomEvent("close-modal"));
         modalContainer.addEventListener("ready-to-close", () => {

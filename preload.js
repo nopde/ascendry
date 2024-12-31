@@ -25,4 +25,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     getShortcuts: () => {
         return ipcRenderer.invoke("get-shortcuts");
     },
+    editShortcut: (name, editedShortcut) => {
+        return ipcRenderer.invoke("edit-shortcut", name, editedShortcut);
+    },
 });

@@ -60,6 +60,14 @@ class Shortcut {
         globalShortcut.unregister(this.key);
     }
 
+    edit(shortcut) {
+        this.remove();
+        this.name = shortcut.name;
+        this.key = shortcut.key;
+        this.action = shortcut.action;
+        this.setup();
+    }
+
     toJSON() {
         return {
             name: this.name,
@@ -112,9 +120,34 @@ class ShortcutManager {
     remove(shortcutName) {
         const shortcut = this.shortcuts.find((s) => s.name === shortcutName);
 
+        if (!shortcut) {
+            console.error("Shortcut with name " + shortcutName + " does not exist.");
+            return false;
+        }
+
         try {
             shortcut.remove();
             this.shortcuts = this.shortcuts.filter((s) => s.name !== shortcut.name);
+
+            this.save();
+            return true;
+        }
+        catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+
+    edit(shortcutName, editedShortcut) {
+        try {
+            const shortcut = this.shortcuts.find((s) => s.name === shortcutName);
+
+            if (!shortcut) {
+                console.error("Shortcut with name " + shortcutName + " does not exist.");
+                return false;
+            }
+
+            shortcut.edit(editedShortcut);
             this.save();
             return true;
         }
@@ -184,6 +217,16 @@ else {
 
         ipcMain.handle("remove-shortcut", (event, shortcutName) => {
             return shortcutManager.remove(shortcutName);
+        });
+
+        ipcMain.handle("edit-shortcut", (event, shortcutName, editedShortcutData) => {
+            const editedShortcut = new Shortcut(
+                editedShortcutData.name,
+                editedShortcutData.key,
+                editedShortcutData.action
+            );
+
+            return shortcutManager.edit(shortcutName, editedShortcut);
         });
 
         ipcMain.handle("minimize", (event) => {
