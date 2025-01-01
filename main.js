@@ -168,6 +168,10 @@ class ShortcutManager {
         this.read();
         return this.shortcuts.map((s) => s.toJSON());
     }
+
+    isNameAvailable(name) {
+        return !this.shortcuts.find((s) => s.name === name);
+    }
 }
 
 const image = nativeImage.createFromPath(path.join(app.getAppPath(), "assets", "icon.ico"));
@@ -241,6 +245,10 @@ else {
 
         ipcMain.handle("save-shortcuts", (event, shortcuts) => {
             shortcutManager.save(shortcuts);
+        });
+
+        ipcMain.handle("is-shortcut-name-available", (event, name) => {
+            return shortcutManager.isNameAvailable(name);
         });
 
         ipcMain.handle("minimize", (event) => {

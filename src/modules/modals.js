@@ -280,7 +280,7 @@ function openAddShortcutModal() {
                 text-align: center;
             }
 
-            .invalid-hotkey {
+            .error-message {
                 color: red;
                 font-size: 12px;
                 padding: 5px 10px;
@@ -296,7 +296,7 @@ function openAddShortcutModal() {
                 transition: all .15s cubic-bezier(0.25, 1, 0.5, 1);
             }
 
-            .invalid-hotkey.visible {
+            .error-message.visible {
                 height: auto;
                 opacity: 1;
                 margin-bottom: 0;
@@ -304,10 +304,11 @@ function openAddShortcutModal() {
         </style>
 
         <form onsubmit="return false">
+            <div class="error-message" id="name-error">This name is not available.</div>
             <div class="modal-input-container" label="Name">
                 <input class="modal-input" id="shortcut-name" type="text" placeholder="notepad-shortcut" spellcheck="false" autocomplete="off" required>
             </div>
-            <div class="invalid-hotkey">Invalid hotkey, please try again.</div>
+            <div class="error-message" id="hotkey-error">You have to define a hotkey.</div>
             <div class="hotkey-input">
                 <p class="hotkey-display" id="hotkey-display">No hotkey</p>
                 <button class="modal-button square" id="hotkey-bind" type="button">Change</button>
@@ -326,7 +327,8 @@ function openAddShortcutModal() {
     const hotkeyDisplay = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#hotkey-display");
     const bindHotkeyButton = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#hotkey-bind");
     const shortcutActionInput = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#shortcut-action");
-    const invalidHotkey = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector(".invalid-hotkey");
+    const nameError = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#name-error");
+    const hotkeyError = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#hotkey-error");
 
     shortcutNameInput.focus();
 
@@ -340,17 +342,24 @@ function openAddShortcutModal() {
         }
     });
 
-    form.addEventListener("submit", event => {
+    form.addEventListener("submit", async (event) => {
+        let validShortcut = true;
         const name = shortcutNameInput.value;
         const hotkey = hotkeyDisplay.innerText;
-
-        if (hotkey === "No hotkey") {
-            invalidHotkey.classList.add("visible");
-            return;
-        }
-
         const action = shortcutActionInput.value;
         const position = getLastShortcutPosition() + 1;
+
+        const isNameAvailable = await window.electronAPI.isShortcutNameAvailable(name);
+        if (!isNameAvailable) {
+            validShortcut = false;
+            nameError.classList.add("visible");
+        }
+        if (hotkey === "No hotkey") {
+            validShortcut = false;
+            hotkeyError.classList.add("visible");
+        }
+
+        if (!validShortcut) return;
         const result = window.electronAPI.addShortcut(name, hotkey, action, position);
 
         modalElement.dispatchEvent(new CustomEvent("close-modal"));

@@ -31,4 +31,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     saveShortcuts: (shortcuts) => {
         return ipcRenderer.invoke("save-shortcuts", shortcuts);
     },
+    isShortcutNameAvailable: (name) => {
+        return ipcRenderer.invoke("is-shortcut-name-available", name);
+    },
 });
