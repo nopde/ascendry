@@ -572,7 +572,7 @@ function openSetShortcutHotkeyModal(shortcut = null) {
         <div class="invalid-hotkey">Invalid hotkey, please try again.</div>
         <div class="hotkey-input-container">
             <div class="modal-input-container" label="Hotkey">
-                <input class="modal-input" id="shortcut-hotkey" type="text" placeholder="ctrl+shift+a" spellcheck="false" autocomplete="off" value=${shortcut ? shortcut.key : ""} required>
+                <input class="modal-input" id="shortcut-hotkey" type="text" placeholder="Record a new hotkey" spellcheck="false" autocomplete="off" ${shortcut ? `value=${shortcut.key}` : ""} required>
             </div>
             <button class="modal-button" id="record-button"></button>
         </div>
