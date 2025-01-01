@@ -21,7 +21,7 @@ function renderShortcuts(shortcuts) {
         return;
     }
 
-    shortcutsContainer.appendChild(document.createElement("h2")).innerText = "Shortcuts";
+    shortcutsContainer.appendChild(document.createElement("h3")).innerText = "Shortcuts";
 
     for (const shortcut of shortcuts) {
         const shortcutElement = document.createElement("div");
