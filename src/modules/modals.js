@@ -427,7 +427,7 @@ function openEditShortcutModal(shortcut) {
     hotkeyDisplay.innerText = shortcut.key;
     bindHotkeyButton.addEventListener("click", async () => {
         try {
-            const hotkey = await openSetShortcutHotkeyModal();
+            const hotkey = await openSetShortcutHotkeyModal(shortcut);
             hotkeyDisplay.innerText = hotkey;
         }
         catch (error) {
@@ -503,7 +503,7 @@ class ShortcutKeyBinder {
     }
 }
 
-function openSetShortcutHotkeyModal() {
+function openSetShortcutHotkeyModal(shortcut = null) {
     const modalHTML = `
         <style>
             :host {
@@ -572,7 +572,7 @@ function openSetShortcutHotkeyModal() {
         <div class="invalid-hotkey">Invalid hotkey, please try again.</div>
         <div class="hotkey-input-container">
             <div class="modal-input-container" label="Hotkey">
-                <input class="modal-input" id="shortcut-hotkey" type="text" placeholder="ctrl+shift+a" spellcheck="false" autocomplete="off" required>
+                <input class="modal-input" id="shortcut-hotkey" type="text" placeholder="ctrl+shift+a" spellcheck="false" autocomplete="off" value=${shortcut ? shortcut.key : ""} required>
             </div>
             <button class="modal-button" id="record-button"></button>
         </div>
