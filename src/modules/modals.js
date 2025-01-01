@@ -1,4 +1,4 @@
-import { getShortcuts } from "./shortcuts.js";
+import { getShortcuts, getLastShortcutPosition } from "./shortcuts.js";
 
 function createModal(name, content) {
     const modalElement = document.createElement("div");
@@ -320,7 +320,8 @@ function openAddShortcutModal() {
         const name = shortcutNameInput.value;
         const hotkey = hotkeyDisplay.innerText;
         const action = shortcutActionInput.value;
-        const result = window.electronAPI.addShortcut(name, hotkey, action);
+        const position = getLastShortcutPosition() + 1;
+        const result = window.electronAPI.addShortcut(name, hotkey, action, position);
 
         modalElement.dispatchEvent(new CustomEvent("close-modal"));
         modalElement.addEventListener("ready-to-close", () => {
@@ -443,7 +444,7 @@ function openEditShortcutModal(shortcut) {
         const name = shortcutNameInput.value;
         const hotkey = hotkeyDisplay.innerText;
         const action = shortcutActionInput.value;
-        const result = window.electronAPI.editShortcut(shortcut.name, { name, key: hotkey, action });
+        const result = window.electronAPI.editShortcut(shortcut.name, { name, key: hotkey, action: action, position: shortcut.position });
 
         modalElement.dispatchEvent(new CustomEvent("close-modal"));
         modalElement.addEventListener("ready-to-close", () => {

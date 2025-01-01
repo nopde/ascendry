@@ -1,4 +1,5 @@
 import { getShortcuts } from "./modules/shortcuts.js";
+import { DragAndDrop } from "./modules/drag_and_drop.js";
 
 const minimize = document.getElementById("minimize");
 const maximize = document.getElementById("maximize");
@@ -25,3 +26,4 @@ quit.addEventListener("click", async () => {
 });
 
 getShortcuts();
+new DragAndDrop("shortcuts");

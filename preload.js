@@ -16,8 +16,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     quit: () => {
         ipcRenderer.invoke("quit");
     },
-    addShortcut: (name, hotkey, action) => {
-        return ipcRenderer.invoke("add-shortcut", name, hotkey, action);
+    addShortcut: (name, hotkey, action, position) => {
+        return ipcRenderer.invoke("add-shortcut", name, hotkey, action, position);
     },
     removeShortcut: (name) => {
         return ipcRenderer.invoke("remove-shortcut", name);

@@ -27,10 +27,11 @@ function createWindow() {
 }
 
 class Shortcut {
-    constructor(name, key, action) {
+    constructor(name, key, action, position) {
         this.name = name;
         this.key = key;
         this.action = action;
+        this.position = position;
     }
 
     check() {
@@ -65,6 +66,7 @@ class Shortcut {
         this.name = shortcut.name;
         this.key = shortcut.key;
         this.action = shortcut.action;
+        this.position = shortcut.position;
         this.setup();
     }
 
@@ -73,6 +75,7 @@ class Shortcut {
             name: this.name,
             key: this.key,
             action: this.action,
+            position: this.position,
         };
     }
 }
@@ -93,7 +96,7 @@ class ShortcutManager {
             const shortcuts = JSON.parse(fs.readFileSync(this.filePath));
             this.shortcuts = shortcuts
                 .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-                .map((s) => new Shortcut(s.name, s.key, s.action));
+                .map((s) => new Shortcut(s.name, s.key, s.action, s.position));
 
             this.shortcuts.forEach((s) => s.setup());
         } catch (error) {
@@ -210,11 +213,12 @@ else {
             return shortcutManager.getAll();
         });
 
-        ipcMain.handle("add-shortcut", (event, shortcutName, hotkeyKey, actionCommand) => {
+        ipcMain.handle("add-shortcut", (event, shortcutName, hotkeyKey, actionCommand, position) => {
             const shortcut = new Shortcut(
                 shortcutName,
                 hotkeyKey,
-                actionCommand
+                actionCommand,
+                position
             );
 
             return shortcutManager.add(shortcut);
@@ -228,7 +232,8 @@ else {
             const editedShortcut = new Shortcut(
                 editedShortcutData.name,
                 editedShortcutData.key,
-                editedShortcutData.action
+                editedShortcutData.action,
+                editedShortcutData.position
             );
 
             return shortcutManager.edit(shortcutName, editedShortcut);

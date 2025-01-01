@@ -1,5 +1,4 @@
 import { openAddShortcutModal, openRemoveShortcutModal, openEditShortcutModal } from "./modals.js";
-import { DragAndDrop } from "./drag_and_drop.js";
 
 const shortcutsContainer = document.getElementById("shortcuts");
 const addShortcut = document.getElementById("add-shortcut");
@@ -65,7 +64,12 @@ function renderShortcuts(shortcuts) {
 async function getShortcuts() {
     const shortcuts = await window.electronAPI.getShortcuts();
     renderShortcuts(shortcuts);
-    new DragAndDrop("shortcuts");
 }
 
-export { getShortcuts };
+function getLastShortcutPosition() {
+    const shortcuts = shortcutsContainer.querySelectorAll(".shortcut");
+    const position = shortcuts.length > 0 ? shortcuts.length - 1 : 0;
+    return position;
+}
+
+export { getShortcuts, getLastShortcutPosition };
