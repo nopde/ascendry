@@ -437,12 +437,36 @@ function openEditShortcutModal(shortcut) {
                 border-radius: 3px;
                 text-align: center;
             }
+
+            .error-message {
+                color: red;
+                font-size: 12px;
+                padding: 5px 10px;
+                background-color: rgb(255, 0, 0, .15);
+                border: 1px solid rgba(255, 0, 0, .1);
+                border-radius: 10px;
+                min-height: 0;
+                height: 0;
+                opacity: 0;
+                margin-bottom: -20px;
+                overflow: hidden;
+                pointer-events: none;
+                transition: all .15s cubic-bezier(0.25, 1, 0.5, 1);
+            }
+
+            .error-message.visible {
+                height: auto;
+                opacity: 1;
+                margin-bottom: 0;
+            }
         </style>
 
         <form onsubmit="return false">
+            <div class="error-message" id="name-error">This name is not available.</div>
             <div class="modal-input-container" label="Name">
                 <input class="modal-input" id="shortcut-name" type="text" placeholder=${shortcut.name} spellcheck="false" autocomplete="off" required>
             </div>
+            <div class="error-message" id="hotkey-error">You have to define a hotkey.</div>
             <div class="hotkey-input">
                 <p class="hotkey-display" id="hotkey-display"></p>
                 <button class="modal-button square" id="hotkey-bind" type="button">Change</button>
@@ -461,6 +485,8 @@ function openEditShortcutModal(shortcut) {
     const hotkeyDisplay = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#hotkey-display");
     const bindHotkeyButton = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#hotkey-bind");
     const shortcutActionInput = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#shortcut-action");
+    const nameError = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#name-error");
+    const hotkeyError = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#hotkey-error");
 
     shortcutNameInput.value = shortcut.name;
 
@@ -479,10 +505,23 @@ function openEditShortcutModal(shortcut) {
 
     shortcutNameInput.focus();
 
-    form.addEventListener("submit", event => {
+    form.addEventListener("submit", async (event) => {
+        let validShortcut = true;
         const name = shortcutNameInput.value;
         const hotkey = hotkeyDisplay.innerText;
         const action = shortcutActionInput.value;
+
+        const isNameAvailable = await window.electronAPI.isShortcutNameAvailable(name);
+        if (!isNameAvailable) {
+            validShortcut = false;
+            nameError.classList.add("visible");
+        }
+        if (hotkey === "No hotkey") {
+            validShortcut = false;
+            hotkeyError.classList.add("visible");
+        }
+
+        if (!validShortcut) return;
         const result = window.electronAPI.editShortcut(shortcut.name, { name, key: hotkey, action: action, position: shortcut.position });
 
         modalElement.dispatchEvent(new CustomEvent("close-modal"));
