@@ -279,12 +279,35 @@ function openAddShortcutModal() {
                 border-radius: 3px;
                 text-align: center;
             }
+
+            .invalid-hotkey {
+                color: red;
+                font-size: 12px;
+                padding: 5px 10px;
+                background-color: rgb(255, 0, 0, .15);
+                border: 1px solid rgba(255, 0, 0, .1);
+                border-radius: 10px;
+                min-height: 0;
+                height: 0;
+                opacity: 0;
+                margin-bottom: -20px;
+                overflow: hidden;
+                pointer-events: none;
+                transition: all .15s cubic-bezier(0.25, 1, 0.5, 1);
+            }
+
+            .invalid-hotkey.visible {
+                height: auto;
+                opacity: 1;
+                margin-bottom: 0;
+            }
         </style>
 
         <form onsubmit="return false">
             <div class="modal-input-container" label="Name">
                 <input class="modal-input" id="shortcut-name" type="text" placeholder="notepad-shortcut" spellcheck="false" autocomplete="off" required>
             </div>
+            <div class="invalid-hotkey">Invalid hotkey, please try again.</div>
             <div class="hotkey-input">
                 <p class="hotkey-display" id="hotkey-display">No hotkey</p>
                 <button class="modal-button square" id="hotkey-bind" type="button">Change</button>
@@ -303,6 +326,7 @@ function openAddShortcutModal() {
     const hotkeyDisplay = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#hotkey-display");
     const bindHotkeyButton = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#hotkey-bind");
     const shortcutActionInput = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector("#shortcut-action");
+    const invalidHotkey = modalElement.shadowRoot.querySelector("div.modal-content").shadowRoot.querySelector(".invalid-hotkey");
 
     shortcutNameInput.focus();
 
@@ -319,6 +343,12 @@ function openAddShortcutModal() {
     form.addEventListener("submit", event => {
         const name = shortcutNameInput.value;
         const hotkey = hotkeyDisplay.innerText;
+
+        if (hotkey === "No hotkey") {
+            invalidHotkey.classList.add("visible");
+            return;
+        }
+
         const action = shortcutActionInput.value;
         const position = getLastShortcutPosition() + 1;
         const result = window.electronAPI.addShortcut(name, hotkey, action, position);
