@@ -1,10 +1,16 @@
 import { openAddShortcutModal, openRemoveShortcutModal, openEditShortcutModal } from "./modals.js";
+import { DragAndDrop } from "./drag_and_drop.js";
 
 const shortcutsContainer = document.getElementById("shortcuts");
 const addShortcut = document.getElementById("add-shortcut");
+const relaodShortcuts = document.getElementById("reload-shortcuts");
 
 addShortcut.addEventListener("click", async () => {
     openAddShortcutModal();
+});
+
+relaodShortcuts.addEventListener("click", async () => {
+    await getShortcuts();
 });
 
 function renderShortcuts(shortcuts) {
@@ -26,6 +32,8 @@ function renderShortcuts(shortcuts) {
     for (const shortcut of shortcuts) {
         const shortcutElement = document.createElement("div");
         shortcutElement.classList.add("shortcut");
+        shortcutElement.setAttribute("draggable", "true");
+        shortcutElement.setAttribute("data-name", shortcut.name);
         shortcutElement.innerHTML = `
             <div class="shortcut-name">${shortcut.name}</div>
             <div class="shortcut-separator"></div>
@@ -57,6 +65,7 @@ function renderShortcuts(shortcuts) {
 async function getShortcuts() {
     const shortcuts = await window.electronAPI.getShortcuts();
     renderShortcuts(shortcuts);
+    new DragAndDrop("shortcuts");
 }
 
 export { getShortcuts };

@@ -91,16 +91,20 @@ class ShortcutManager {
 
         try {
             const shortcuts = JSON.parse(fs.readFileSync(this.filePath));
-            this.shortcuts = shortcuts.map((s) => new Shortcut(s.name, s.key, s.action));
+            this.shortcuts = shortcuts
+                .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+                .map((s) => new Shortcut(s.name, s.key, s.action));
+
             this.shortcuts.forEach((s) => s.setup());
-        }
-        catch (error) {
+        } catch (error) {
             console.error(error);
         }
     }
 
-    save() {
-        const shortcuts = this.shortcuts.map((s) => s.toJSON());
+    save(shortcuts) {
+        if (!shortcuts) {
+            shortcuts = this.shortcuts.map((s) => s.toJSON());
+        }
         fs.writeFileSync(this.filePath, JSON.stringify(shortcuts, null, 4));
     }
 
@@ -158,6 +162,7 @@ class ShortcutManager {
     }
 
     getAll() {
+        this.read();
         return this.shortcuts.map((s) => s.toJSON());
     }
 }
@@ -227,6 +232,10 @@ else {
             );
 
             return shortcutManager.edit(shortcutName, editedShortcut);
+        });
+
+        ipcMain.handle("save-shortcuts", (event, shortcuts) => {
+            shortcutManager.save(shortcuts);
         });
 
         ipcMain.handle("minimize", (event) => {
