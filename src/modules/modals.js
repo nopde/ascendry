@@ -96,6 +96,10 @@ function createModal(name, content) {
                 background-color: rgb(255, 255, 255, .2);
             }
 
+            .modal-title button:active {
+                background-color: rgb(255, 255, 255, .3);
+            }
+
             .modal-content {
                 padding: 10px;
                 padding-top: 20px;
@@ -147,6 +151,10 @@ function createModal(name, content) {
 
             button.modal-button:hover {
                 background-color: rgb(255, 255, 255, .35);
+            }
+
+            button.modal-button:active {
+                background-color: rgb(255, 255, 255, .45);
             }
 
             button.modal-button.square {
