@@ -38,6 +38,7 @@ function createModal(name, content) {
                 z-index: 100;
                 backdrop-filter: blur(15px);
                 opacity: 0;
+                outline: none;
                 animation: fadeIn .15s cubic-bezier(0.25, 1, 0.5, 1) forwards;
             }
 
@@ -89,7 +90,7 @@ function createModal(name, content) {
                 border-radius: 999px;
                 cursor: pointer;
                 margin-left: auto;
-                transition: background-color .1s cubic-bezier(0.25, 1, 0.5, 1);
+                transition: all .1s cubic-bezier(0.25, 1, 0.5, 1);
             }
 
             .modal-title button:hover {
@@ -98,6 +99,10 @@ function createModal(name, content) {
 
             .modal-title button:active {
                 background-color: rgb(255, 255, 255, .3);
+            }
+
+            .modal-title button:focus {
+                box-shadow: 0 0 0 2px white;
             }
 
             .modal-content {
@@ -118,6 +123,27 @@ function createModal(name, content) {
             <div class="modal-content"></div>
         </div>
     `;
+
+    modalElement.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            modalElement.dispatchEvent(new CustomEvent("close-modal"));
+        }
+    });
+
+    const modals = document.querySelectorAll(".modal-container");
+
+    modals.forEach(modal => {
+        if (modal !== modalElement) {
+            modal.setAttribute("tabindex", "-1");
+        }
+    });
+
+    modalElement.addEventListener("close-modal", () => {
+        const remainingModals = document.querySelectorAll(".modal-container");
+        remainingModals.forEach(modal => {
+            modal.setAttribute("tabindex", "0");
+        });
+    });
 
     const modalContent = modalElement.shadowRoot.querySelector(".modal-content");
 
@@ -146,7 +172,7 @@ function createModal(name, content) {
                 padding: 10px 20px;
                 border-radius: 999px;
                 cursor: pointer;
-                transition: background-color .1s cubic-bezier(0.25, 1, 0.5, 1);
+                transition: all .1s cubic-bezier(0.25, 1, 0.5, 1);
             }
 
             button.modal-button:hover {
@@ -155,6 +181,10 @@ function createModal(name, content) {
 
             button.modal-button:active {
                 background-color: rgb(255, 255, 255, .45);
+            }
+
+            button.modal-button:focus {
+                box-shadow: 0 0 0 2px white;
             }
 
             button.modal-button.square {
@@ -557,7 +587,7 @@ class ShortcutKeyBinder {
             "tab", "space", "backspace", "delete", "enter", "esc", "escape", "up", "down", "left", "right"
         ];
 
-        const keys = shortcut.toLowerCase().split('+');
+        const keys = shortcut.toLowerCase().split("+");
         const hasModifier = keys.some(key => modifiers.includes(key));
         if (!hasModifier) return false;
 
