@@ -75,4 +75,8 @@ function getLastShortcutPosition() {
     return position;
 }
 
+window.electronAPI.onShowNotification((body) => {
+    showNotification(body);
+});
+
 export { getShortcuts, getLastShortcutPosition };

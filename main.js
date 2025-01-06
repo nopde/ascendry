@@ -52,6 +52,7 @@ class Shortcut {
         globalShortcut.register(this.key, () => {
             console.log("Shortcut triggered: " + this.name);
             exec(this.action);
+            mainWindow.webContents.send("show-notification", `Shortcut <strong>${this.name}</strong> triggered`);
         });
 
         return true;

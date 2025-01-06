@@ -34,4 +34,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
     isShortcutNameAvailable: (name) => {
         return ipcRenderer.invoke("is-shortcut-name-available", name);
     },
+    onShowNotification: (callback) => {
+        ipcRenderer.on("show-notification", (event, body) => {
+            callback(body);
+        });
+    }
 });
