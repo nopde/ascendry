@@ -1,15 +1,18 @@
 import { openAddShortcutModal, openRemoveShortcutModal, openEditShortcutModal } from "./modals.js";
+import { showNotification } from "./notifications.js";
 
 const shortcutsContainer = document.getElementById("shortcuts");
 const addShortcut = document.getElementById("add-shortcut");
-const relaodShortcuts = document.getElementById("reload-shortcuts");
+const reloadShortcuts = document.getElementById("reload-shortcuts");
 
 addShortcut.addEventListener("click", async () => {
     openAddShortcutModal();
 });
 
-relaodShortcuts.addEventListener("click", async () => {
+reloadShortcuts.addEventListener("click", async () => {
     await getShortcuts();
+
+    showNotification("Shortcuts reloaded");
 });
 
 function renderShortcuts(shortcuts) {

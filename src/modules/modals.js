@@ -1,4 +1,5 @@
 import { getShortcuts, getLastShortcutPosition } from "./shortcuts.js";
+import { showNotification } from "./notifications.js";
 
 function createModal(name, content) {
     const modalElement = document.createElement("div");
@@ -400,6 +401,13 @@ function openAddShortcutModal() {
         if (!validShortcut) return;
         const result = window.electronAPI.addShortcut(name, hotkey, action, position);
 
+        if (result) {
+            showNotification(`Shortcut <strong>${name}</strong> added`);
+        }
+        else {
+            showNotification(`Couldn't add shortcut <strong>${name}</strong>`);
+        }
+
         modalElement.dispatchEvent(new CustomEvent("close-modal"));
         modalElement.addEventListener("ready-to-close", () => {
             getShortcuts();
@@ -419,6 +427,13 @@ function openRemoveShortcutModal(shortcut) {
 
     confirmButton.addEventListener("click", event => {
         const result = window.electronAPI.removeShortcut(shortcut.name);
+
+        if (result) {
+            showNotification(`Shortcut <strong>${shortcut.name}</strong> removed`);
+        }
+        else {
+            showNotification(`Couldn't remove shortcut <strong>${shortcut.name}</strong>`);
+        }
 
         modalElement.dispatchEvent(new CustomEvent("close-modal"));
         modalElement.addEventListener("ready-to-close", () => {
@@ -550,7 +565,7 @@ function openEditShortcutModal(shortcut) {
         const action = shortcutActionInput.value;
 
         const isNameAvailable = await window.electronAPI.isShortcutNameAvailable(name);
-        if (!isNameAvailable) {
+        if (!isNameAvailable && name !== shortcut.name) {
             validShortcut = false;
             nameError.classList.add("visible");
         }
@@ -560,7 +575,18 @@ function openEditShortcutModal(shortcut) {
         }
 
         if (!validShortcut) return;
-        const result = window.electronAPI.editShortcut(shortcut.name, { name, key: hotkey, action: action, position: shortcut.position });
+        const isEdited = name !== shortcut.name || hotkey !== shortcut.key || action !== shortcut.action;
+
+        if (isEdited) {
+            const result = window.electronAPI.editShortcut(shortcut.name, { name, key: hotkey, action: action, position: shortcut.position });
+
+            if (result) {
+                showNotification(`Shortcut <strong>${shortcut.name}</strong> edited`);
+            }
+            else {
+                showNotification(`Couldn't edit shortcut <strong>${shortcut.name}</strong>`);
+            }
+        }
 
         modalElement.dispatchEvent(new CustomEvent("close-modal"));
         modalElement.addEventListener("ready-to-close", () => {
